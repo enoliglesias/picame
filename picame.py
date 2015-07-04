@@ -51,16 +51,12 @@ def remove_hooks():
 # Main loop
 
 while True:
-  GPIO.setmode(GPIO.BCM)
   GPIO.setup(button1_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
   GPIO.wait_for_edge(button1_pin, GPIO.FALLING)
   take_photo()
-  GPIO.setmode(GPIO.BCM)
   GPIO.setup(button1_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
-  GPIO.setmode(GPIO.BCM)
   GPIO.setup(button2_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
   GPIO.wait_for_edge(button2_pin, GPIO.FALLING)
   take_video()
-  GPIO.setmode(GPIO.BCM)
   GPIO.setup(button2_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
