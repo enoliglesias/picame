@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+# created by https://github.com/enoliglesias
+
+import os
+import glob
+import time
+from time import sleep
+import RPi.GPIO as GPIO
+import picamera
+from signal import alarm, signal, SIGALRM, SIGKILL
+import subprocess as sub
+
+# Global var
+
+button1_pin = 20
+button2_pin = 21
+
+# GPIO config
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(button1_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+GPIO.setup(button2_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+
+# Functions
+
+def take_photo():
+
+  camera = picamera.PiCamera()
+  camera.start_preview()
+  time.sleep(3)
+  camera.stop_preview()
+  now = time.strftime("%Y-%m-%d-%H:%M:%S")
+  camera.capture('photo-'+now+'.jpg')
+  camera.close()
+
+def take_video():
+
+  os.chdir("/home/pi/picame")
+  remove_hooks()
+  camera = sub.Popen("./picam --alsadev hw:0,0", shell=True, stdout=sub.PIPE)
+  time.sleep(1)
+  sub.Popen("touch hooks/start_record", shell=True, stdout=sub.PIPE)
+  time.sleep(5)
+  sub.Popen("touch hooks/start_record", shell=True, stdout=sub.PIPE)
+  sleep(2)
+  sub.Popen("pgrep -o -x picam | xargs -I {} kill -9 {}", shell=True, stdout=sub.PIPE)
+
+def remove_hooks():
+  sub.Popen("rm -f hooks/*", shell=True, stdout=sub.PIPE)
+
+# Main loop
+
+while True:
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setup(button1_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+  GPIO.wait_for_edge(button1_pin, GPIO.FALLING)
+  take_photo()
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setup(button1_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setup(button2_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+  GPIO.wait_for_edge(button2_pin, GPIO.FALLING)
+  take_video()
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setup(button2_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
