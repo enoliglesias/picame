@@ -35,7 +35,7 @@ def take_photo():
 
 def take_video():
 
-  os.chdir("/home/pi/picame")
+  os.chdir("/home/pi/picam")
   remove_hooks()
   camera = sub.Popen("./picam --alsadev hw:0,0", shell=True, stdout=sub.PIPE)
   time.sleep(1)
