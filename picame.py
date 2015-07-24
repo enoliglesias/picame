@@ -12,8 +12,8 @@ import subprocess as sub
 
 # Global var
 
-button1_pin = 20
-button2_pin = 21
+button1_pin = 26
+button2_pin = 12
 
 # GPIO config
 
