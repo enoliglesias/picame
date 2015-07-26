@@ -18,13 +18,12 @@ button2_pin = 12
 # GPIO config
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(button1_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-GPIO.setup(button2_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+GPIO.setup(button1_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(button2_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Functions
 
-def take_photo():
-
+def take_photo(n):
   camera = picamera.PiCamera()
   camera.start_preview()
   time.sleep(3)
@@ -33,8 +32,7 @@ def take_photo():
   camera.capture('photo-'+now+'.jpg')
   camera.close()
 
-def take_video():
-
+def take_video(n):
   os.chdir("/home/pi/picam")
   remove_hooks()
   camera = sub.Popen("./picam --alsadev hw:0,0", shell=True, stdout=sub.PIPE)
@@ -48,15 +46,10 @@ def take_video():
 def remove_hooks():
   sub.Popen("rm -f hooks/*", shell=True, stdout=sub.PIPE)
 
+GPIO.add_event_detect(button1_pin, GPIO.FALLING, callback=take_photo, bouncetime=200)
+GPIO.add_event_detect(button2_pin, GPIO.FALLING, callback=take_video, bouncetime=200)
+
 # Main loop
 
 while True:
-  GPIO.setup(button1_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-  GPIO.wait_for_edge(button1_pin, GPIO.FALLING)
-  take_photo()
-  GPIO.setup(button1_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-
-  GPIO.setup(button2_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-  GPIO.wait_for_edge(button2_pin, GPIO.FALLING)
-  take_video()
-  GPIO.setup(button2_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+  time.sleep(0.5)
