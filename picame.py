@@ -14,6 +14,7 @@ import subprocess as sub
 
 button1_pin = 26
 button2_pin = 12
+video_time= 5
 
 # GPIO config
 
@@ -35,10 +36,10 @@ def take_photo(n):
 def take_video(n):
   os.chdir("/home/pi/picam")
   remove_hooks()
-  camera = sub.Popen("./picam --alsadev hw:0,0", shell=True, stdout=sub.PIPE)
+  sub.Popen("./picam --alsadev hw:0,0", shell=True, stdout=sub.PIPE)
   time.sleep(1)
   sub.Popen("touch hooks/start_record", shell=True, stdout=sub.PIPE)
-  time.sleep(5)
+  time.sleep(video_time)
   sub.Popen("touch hooks/start_record", shell=True, stdout=sub.PIPE)
   sleep(2)
   sub.Popen("pgrep -o -x picam | xargs -I {} kill -9 {}", shell=True, stdout=sub.PIPE)
