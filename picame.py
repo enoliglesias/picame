@@ -25,13 +25,8 @@ GPIO.setup(button2_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # Functions
 
 def take_photo(n):
-  camera = picamera.PiCamera()
-  camera.start_preview()
-  time.sleep(3)
-  camera.stop_preview()
-  now = time.strftime("%Y-%m-%d-%H:%M:%S")
-  camera.capture('photo-'+now+'.jpg')
-  camera.close()
+  os.chdir("/home/pi/photos")
+  sub.Popen("raspistill -o image_$(date +'%Y-%m-%d_%H%M').jpg", shell=True, stdout=sub.PIPE)
 
 def take_video(n):
   os.chdir("/home/pi/picam")
