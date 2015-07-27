@@ -14,7 +14,7 @@ import subprocess as sub
 
 button1_pin = 26
 button2_pin = 12
-video_time= 5
+video_time = 5
 
 # GPIO config
 
